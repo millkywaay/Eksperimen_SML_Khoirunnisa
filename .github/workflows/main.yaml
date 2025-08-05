@@ -1,0 +1,34 @@
+name: Preprocessing CI
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  preprocess-data:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run preprocessing script
+        run: python automate_khoiruunisa.py
+
+      - name: Commit and push processed data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "CI: Auto-update processed dataset"
+          file_pattern: 'heart_disease_preprocessing/*'
